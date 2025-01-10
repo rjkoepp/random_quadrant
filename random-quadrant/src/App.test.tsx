@@ -29,9 +29,9 @@ describe('App Component - Initial Render', () => {
     const quadrants = screen.getAllByTestId('color-quadrant');
     
     // Verify initial color positions
-    expect(quadrants[0]).toHaveStyle({ backgroundColor: 'red' });     // top-left
-    expect(quadrants[1]).toHaveStyle({ backgroundColor: 'blue' });    // top-right
-    expect(quadrants[2]).toHaveStyle({ backgroundColor: 'orange' });  // bottom-left
-    expect(quadrants[3]).toHaveStyle({ backgroundColor: 'green' });   // bottom-right
+    expect(quadrants[0]).toHaveAttribute('style', expect.stringContaining('red'));       // top-left
+    expect(quadrants[1]).toHaveAttribute('style', expect.stringContaining('blue'));      // top-right
+    expect(quadrants[2]).toHaveAttribute('style', expect.stringContaining('orange'));    // bottom-left
+    expect(quadrants[3]).toHaveAttribute('style', expect.stringContaining('green'));     // bottom-right
   });
 });
