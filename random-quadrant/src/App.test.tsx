@@ -34,4 +34,18 @@ describe('App Component - Initial Render', () => {
     expect(quadrants[2]).toHaveAttribute('style', expect.stringContaining('orange'));    // bottom-left
     expect(quadrants[3]).toHaveAttribute('style', expect.stringContaining('green'));     // bottom-right
   });
+
+  it('should have an accessible randomize button', () => {
+    render(<App />);
+    
+    // Find the button
+    const button = screen.getByRole('button', { name: /randomize colors/i });
+    
+    // Verify button presence and accessibility
+    expect(button).toBeInTheDocument();
+    expect(button).toBeVisible();
+    expect(button).toBeEnabled();
+    expect(button).toHaveTextContent(/randomize colors/i);
+    expect(button).toHaveClass('w-full');
+  });
 });
