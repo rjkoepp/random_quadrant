@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import App from './App';
 
@@ -47,5 +47,33 @@ describe('App Component - Initial Render', () => {
     expect(button).toBeEnabled();
     expect(button).toHaveTextContent(/randomize colors/i);
     expect(button).toHaveClass('w-full');
+  });
+
+  it('should maintain all colors after randomization', () => {
+    render(<App />);
+    
+    // Get initial colors
+    const initialQuadrants = screen.getAllByTestId('color-quadrant');
+    const initialColors = new Set(
+      initialQuadrants.map(q => 
+        q.getAttribute('style')?.match(/background-color:\s*(\w+)/)?.[1]
+      ).filter(Boolean)
+    );
+
+    // Click randomize button
+    const button = screen.getByRole('button', { name: /randomize colors/i });
+    fireEvent.click(button);
+
+    // Get new colors
+    const newQuadrants = screen.getAllByTestId('color-quadrant');
+    const newColors = new Set(
+      newQuadrants.map(q => 
+        q.getAttribute('style')?.match(/background-color:\s*(\w+)/)?.[1]
+      ).filter(Boolean)
+    );
+
+    // Verify all colors are maintained
+    expect(newColors.size).toBe(4);
+    expect([...initialColors].sort()).toEqual([...newColors].sort());
   });
 });
