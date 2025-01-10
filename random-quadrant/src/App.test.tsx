@@ -76,4 +76,35 @@ describe('App Component - Initial Render', () => {
     expect(newColors.size).toBe(4);
     expect([...initialColors].sort()).toEqual([...newColors].sort());
   });
+
+  it('should change color positions on button click', () => {
+    render(<App />);
+    
+    // Get initial color positions
+    const initialQuadrants = screen.getAllByTestId('color-quadrant');
+    const initialPositions = initialQuadrants.map(q => 
+      q.getAttribute('style')?.match(/background-color:\s*(\w+)/)?.[1]
+    );
+
+    // Click randomize button multiple times to ensure position changes
+    const button = screen.getByRole('button', { name: /randomize colors/i });
+    let positionsChanged = false;
+    let attempts = 0;
+    const maxAttempts = 10;
+
+    while (!positionsChanged && attempts < maxAttempts) {
+      fireEvent.click(button);
+      
+      const newQuadrants = screen.getAllByTestId('color-quadrant');
+      const newPositions = newQuadrants.map(q => 
+        q.getAttribute('style')?.match(/background-color:\s*(\w+)/)?.[1]
+      );
+      
+      // Check if any position has changed
+      positionsChanged = newPositions.some((color, index) => color !== initialPositions[index]);
+      attempts++;
+    }
+
+    expect(positionsChanged).toBe(true);
+  });
 });
