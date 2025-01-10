@@ -172,4 +172,39 @@ describe('App Component - Initial Render', () => {
     expect(positionsChanged).toBe(true);
     expect(allColorsUsed.size).toBe(colors.length);
   });
+
+  it('should maintain proper layout and styling', () => {
+    render(<App />);
+    
+    // Test grid container
+    const gridContainer = screen.getByTestId('quadrant-grid');
+    expect(gridContainer).toHaveClass('grid', 'grid-cols-2', 'gap-4', 'mb-4');
+
+    // Test quadrant styling
+    const quadrants = screen.getAllByTestId('color-quadrant');
+    quadrants.forEach(quadrant => {
+      expect(quadrant).toHaveClass('aspect-square', 'rounded-lg');
+      expect(quadrant).toHaveStyle({ minHeight: '200px' });
+    });
+
+    // Test button styling
+    const button = screen.getByRole('button', { name: /randomize colors/i });
+    expect(button).toHaveClass('w-full');
+
+    // Test container responsiveness
+    const container = gridContainer.parentElement;
+    expect(container).toHaveClass('w-full', 'max-w-lg');
+
+    // Test page layout
+    const pageContainer = container?.parentElement;
+    expect(pageContainer).toHaveClass(
+      'min-h-screen',
+      'flex',
+      'flex-col',
+      'items-center',
+      'justify-center',
+      'bg-gray-100',
+      'p-4'
+    );
+  });
 });
