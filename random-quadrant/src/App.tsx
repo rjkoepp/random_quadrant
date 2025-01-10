@@ -15,10 +15,11 @@ function App() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
       <div className="w-full max-w-lg">
-        <div className="grid grid-cols-2 gap-4 mb-4">
+        <div data-testid="quadrant-grid" className="grid grid-cols-2 gap-4 mb-4">
           {colors.map((color, index) => (
             <div
               key={index}
+              data-testid="color-quadrant"
               className="aspect-square rounded-lg"
               style={{
                 backgroundColor: color,
