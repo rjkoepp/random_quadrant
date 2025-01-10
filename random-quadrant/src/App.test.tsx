@@ -107,4 +107,32 @@ describe('App Component - Initial Render', () => {
 
     expect(positionsChanged).toBe(true);
   });
+
+  it('should maintain color uniqueness after randomization', () => {
+    render(<App />);
+    
+    const button = screen.getByRole('button', { name: /randomize colors/i });
+    const numAttempts = 5;
+
+    // Test multiple randomizations to ensure uniqueness is always maintained
+    for (let i = 0; i < numAttempts; i++) {
+      fireEvent.click(button);
+      
+      const quadrants = screen.getAllByTestId('color-quadrant');
+      const colors = quadrants.map(q => 
+        q.getAttribute('style')?.match(/background-color:\s*(\w+)/)?.[1]
+      ).filter(Boolean);
+
+      // Check for uniqueness
+      const uniqueColors = new Set(colors);
+      expect(uniqueColors.size).toBe(4);
+      expect(colors).toHaveLength(4);
+      
+      // Verify all expected colors are present
+      expect(uniqueColors).toContain('red');
+      expect(uniqueColors).toContain('blue');
+      expect(uniqueColors).toContain('orange');
+      expect(uniqueColors).toContain('green');
+    }
+  });
 });
