@@ -21,4 +21,17 @@ describe('App Component - Initial Render', () => {
     const gridContainer = screen.getByTestId('quadrant-grid');
     expect(gridContainer).toHaveClass('grid', 'grid-cols-2', 'gap-4');
   });
+
+  it('should have correct initial color positions', () => {
+    render(<App />);
+    
+    // Find all quadrant elements
+    const quadrants = screen.getAllByTestId('color-quadrant');
+    
+    // Verify initial color positions
+    expect(quadrants[0]).toHaveStyle({ backgroundColor: 'red' });     // top-left
+    expect(quadrants[1]).toHaveStyle({ backgroundColor: 'blue' });    // top-right
+    expect(quadrants[2]).toHaveStyle({ backgroundColor: 'orange' });  // bottom-left
+    expect(quadrants[3]).toHaveStyle({ backgroundColor: 'green' });   // bottom-right
+  });
 });
