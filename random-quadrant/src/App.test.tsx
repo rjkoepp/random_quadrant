@@ -135,4 +135,49 @@ describe('App Component - Initial Render', () => {
       expect(uniqueColors).toContain('green');
     }
   });
+
+  it('should distribute colors randomly', () => {
+    render(<App />);
+    
+    const button = screen.getByRole('button', { name: /randomize colors/i });
+    const iterations = 100; // Number of randomizations to test
+    const positions = [0, 1, 2, 3];
+    const colors = ['red', 'blue', 'orange', 'green'] as const;
+    type Color = typeof colors[number];
+    
+    // Track color occurrences in each position
+    const colorPositionCounts: Record<Color, number[]> = {} as Record<Color, number[]>;
+    colors.forEach((color: Color) => {
+      colorPositionCounts[color] = positions.map(() => 0);
+    });
+
+    // Perform multiple randomizations
+    for (let i = 0; i < iterations; i++) {
+      fireEvent.click(button);
+      
+      const quadrants = screen.getAllByTestId('color-quadrant');
+      const currentColors = quadrants.map(q => 
+        q.getAttribute('style')?.match(/background-color:\s*(\w+)/)?.[1]
+      );
+
+      // Count occurrences of each color in each position
+      currentColors.forEach((color, pos) => {
+        if (color && colors.includes(color as Color)) {
+          colorPositionCounts[color as Color][pos]++;
+        }
+      });
+    }
+
+    // Statistical analysis
+    const expectedCount = iterations / 4; // Each color should appear in each position ~25% of the time
+    const tolerance = 0.4; // Allow 40% deviation from expected value
+
+    // Check if distribution is roughly uniform
+    colors.forEach((color: Color) => {
+      colorPositionCounts[color].forEach((count: number) => {
+        const deviation = Math.abs(count - expectedCount) / expectedCount;
+        expect(deviation).toBeLessThan(tolerance);
+      });
+    });
+  });
 });
